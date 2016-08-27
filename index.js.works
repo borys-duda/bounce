@@ -1,4 +1,3 @@
-//index.js from https://github.com/rmistry75/Bounce
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
@@ -6,7 +5,7 @@ var multer = require('multer');
 var mysql = require('mysql');
 var fs = require('fs');
 var https = require('https');
-var config = require('./config');
+
 
 https.createServer({
   key: fs.readFileSync('key.pem'),
@@ -14,7 +13,9 @@ https.createServer({
 }, app).listen(443);
 
 // Twilio SMS client 
-var twilioClient = require('twilio')(config.twilioAccountSID, config.twilioAuthToken); 
+var accountSid = 'AC300adeb6b9dfd34b15f07a6e126fe460'; 
+var authToken = 'aa9188c0610679ca7976104e1f011743'; 
+var twilioClient = require('twilio')(accountSid, authToken); 
  
 // Storing invoice PDFs 
 var storage = multer.diskStorage({
@@ -30,10 +31,10 @@ var upload = multer({ storage: storage })
 
 // MySQL DB connection 
 var con = mysql.createConnection({
-  host: config.mysqlHost,
-  user: config.mysqlUser,
-  password: config.mysqlPassword,
-  database: config.mysqlDatabase
+  host: "aaaczenxl60o21.crjwypp8qyef.us-east-1.rds.amazonaws.com",
+  user: "rmistry75",
+  password: "Bounce2016",
+  database: "ebdb"
 });
 
 con.connect(function(err){
@@ -151,9 +152,9 @@ app.get("/stripe", function(req, res) {
     url: "https://connect.stripe.com/oauth/token",
     form: {
       grant_type: "authorization_code",
-      client_id: config.StripeOAuthClientID,
+      client_id: "ca_8zXcdeJDJXH5p7NIjIS1H9imXDewtAeF",
       code: authCode,
-      client_secret: config.StripeOAuthClientSecret 
+      client_secret: "sk_test_gXuZmNJG89S7ULTRXejRAO5x" 
     }
   }, function(err, r, body) {
  
