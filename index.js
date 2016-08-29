@@ -7,6 +7,7 @@ var mysql = require('mysql');
 var fs = require('fs');
 var https = require('https');
 var config = require('./config');
+var Stripe = require('stripe');
 
 https.createServer({
   key: fs.readFileSync('key.pem'),
@@ -165,6 +166,46 @@ app.get("/stripe", function(req, res) {
     // For demo"s sake, output in response:
     //res.send({ "Your Token": accessToken });
     res.send(body);
+  });
+});
+
+app.post('/pay', function (req, res) { //Pay to 'account' with payment token 'id'
+  var source = req.body.source;
+  if(!source) {
+    res.status(400).send('Missing Payment Source!');
+    return;
+  }
+  var account = req.body.account;
+  if(!account) {
+    res.status(400).send('Missing Destination Account!');
+    return;
+  }
+
+  var amount = req.body.amount;
+  if(!amount) {
+    res.status(400).send('Missing  Amount!');
+    return;
+  }
+
+  var currency = req.body.currency;
+  if(!currency) {
+    res.status(400).send('Missing  Currency!');
+    return;
+  }
+
+  //Payment
+  var myStripe = Stripe(config.StripeOAuthClientSecret);
+  myStripe.charges.create({
+    amount: amount,
+    currency: currency,
+    source: source,
+    destination: account
+  }, function (err, charges) {
+    if(err){
+      res.status(500).json(err);
+    } else {
+      res.json(charges);
+    }
   });
 });
 
