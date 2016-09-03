@@ -14,6 +14,7 @@ https.createServer({
   cert: fs.readFileSync('cert.pem')
 }, app).listen(443);
 
+
 app.use(function (req, res, next) {
 
   // Website you wish to allow to connect
@@ -119,7 +120,8 @@ app.put('/invoice', function (req, res) {
     else
     {
       console.log("success");
-      res.send("success");
+      //res.send("success");
+      res.send(result);
     }
   });
 });
